@@ -11,7 +11,7 @@ async function signUp(req, res) {
     const hash = bcrypt.hashSync(password, 10);
 
     const search = await connection.query(`SELECT * FROM users WHERE email = $1;`, [email]);
-    console.log(search)
+    
     if(search.rowCount) {
         return res.status(409).send("Email já cadastrado na plataforma");
     }
@@ -25,4 +25,23 @@ async function signUp(req, res) {
     }
 }
 
-export { signUp };
+async function login(req, res) {
+    const {
+        email,
+        password
+    } = req.body;
+
+    const result = await connection.query(`
+        SELECT * FROM users WHERE email = $1;
+    `, [email]);
+
+    const hashPassword = bcrypt.compareSync(password, result.rows[0].password);
+
+    if (hashPassword) {
+        res.sendStatus(200);
+    } else  {
+        res.sendStatus(401);
+    }
+}
+
+export { signUp, login };
