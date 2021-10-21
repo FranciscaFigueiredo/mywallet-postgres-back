@@ -1,5 +1,6 @@
 import connection from "../database/database.js";
 import bcrypt from 'bcrypt';
+import { v4 as uuid} from 'uuid'
 
 async function signUp(req, res) {
     const {
@@ -35,10 +36,20 @@ async function login(req, res) {
         SELECT * FROM users WHERE email = $1;
     `, [email]);
 
-    const hashPassword = bcrypt.compareSync(password, result.rows[0].password);
+    const user = result.rows[0];
 
-    if (hashPassword) {
-        res.sendStatus(200);
+    const hashPassword = bcrypt.compareSync(password, user.password);
+
+    if (user && hashPassword) {
+        const token = uuid();
+
+        await connection.query(`
+            INSERT INTO sessions
+                (token, "userId")
+            VALUES ($1, $2);
+        `, [token, user.id]);
+
+        res.status(200).send(token);
     } else  {
         res.sendStatus(401);
     }
