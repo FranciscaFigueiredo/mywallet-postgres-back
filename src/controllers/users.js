@@ -22,7 +22,7 @@ async function signUp(req, res) {
         console.log(hash)
         res.status(201).send("Usuário cadastrado com sucesso");
     } catch (error) {
-        res.sendStatus(500);
+        return res.status(500).send({message: "O banco de dados está offline"});
     }
 }
 
@@ -32,15 +32,23 @@ async function login(req, res) {
         password
     } = req.body;
 
-    const result = await connection.query(`
-        SELECT * FROM users WHERE email = $1;
-    `, [email]);
+    try {
+        const result = await connection.query(`
+            SELECT * FROM users WHERE email = $1;
+        `, [email]);
 
-    const user = result.rows[0];
+        const user = result.rows[0];
 
-    const hashPassword = bcrypt.compareSync(password, user.password);
+        const hashPassword = bcrypt.compareSync(password, user.password);
 
-    if (user && hashPassword) {
+        if (!user) {
+            res.status(401).send('Usuário não cadastrado');
+        }
+
+        if (!hashPassword){
+            res.status(401).send('Email ou senha inválidos');
+        }
+
         const token = uuid();
 
         await connection.query(`
@@ -50,8 +58,9 @@ async function login(req, res) {
         `, [token, user.id]);
 
         res.status(200).send(token);
-    } else  {
-        res.sendStatus(401);
+
+    } catch (error) {
+        return res.status(500).send({message: "O banco de dados está offline"});
     }
 }
 
