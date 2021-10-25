@@ -1,12 +1,17 @@
 {
   "type": "module",
   "dependencies": {
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "babel-jest": "^27.3.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dayjs": "^1.10.7",
     "express": "^4.17.1",
+    "jest": "^27.3.1",
     "joi": "^17.4.2",
     "pg": "^8.7.1",
+    "supertest": "^6.1.6",
     "uuid": "^8.3.2"
   }
 }

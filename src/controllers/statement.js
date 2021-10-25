@@ -8,7 +8,7 @@ async function postStatement(req, res) {
     const { type } = req.query;
     
     const token = req.headers.authorization?.replace('Bearer ', '');
-    console.log(type)
+    
     const {
         value,
         description
@@ -38,7 +38,7 @@ async function postStatement(req, res) {
     }
 
     const dateToday = dayjs().locale('pt-Br').format('DD/MM/YYYY HH:mm:ss');
-    console.log(dateToday)
+    
     try {
         const search = await connection.query(`
             SELECT 
@@ -54,7 +54,6 @@ async function postStatement(req, res) {
         }
         
         const user = search.rows;
-        console.log(user)
 
         await connection.query(`
             INSERT INTO statement
@@ -62,7 +61,6 @@ async function postStatement(req, res) {
             VALUES
                 ($1, $2, $3, $4);
         `, [user[0].userId, valueData, description, dateToday]);
-        console.log(search.rows)
 
         res.status(200).send('Informação adicionada à carteira');
 
@@ -79,7 +77,6 @@ async function getStatement(req, res) {
     }
     
     try {
-        console.log(token)
         const wallet = await connection.query(`
             SELECT 
                 statement.value, statement.description, statement.date
@@ -89,7 +86,6 @@ async function getStatement(req, res) {
                 ON sessions."userId" = statement."userId"
                     AND sessions.token = $1;
         `, [token]);
-        // console.log(wallet.rows)
         const total = await connection.query(`
             SELECT SUM(value) AS total 
             FROM statement 
@@ -100,7 +96,6 @@ async function getStatement(req, res) {
 
         const walletData = wallet.rows;
         const totalData = total.rows[0].total;
-        console.log({walletData, totalData})
 
         res.status(200).send({walletData, totalData})
 

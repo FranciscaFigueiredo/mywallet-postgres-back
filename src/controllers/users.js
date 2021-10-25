@@ -24,13 +24,13 @@ async function signUp(req, res) {
 
     const search = await connection.query(`SELECT * FROM users WHERE email = $1;`, [email]);
     
-    if(search.rowCount) {
+    if (search.rowCount) {
         return res.status(409).send("Email já cadastrado na plataforma");
     }
 
     try {
         await connection.query(`INSERT INTO users (name, email, password) VALUES ($1, $2, $3);`, [name, email, hash])
-        console.log(hash)
+        
         res.status(201).send("Usuário cadastrado com sucesso");
     } catch (error) {
         return res.status(500).send({message: "O banco de dados está offline"});
@@ -63,7 +63,7 @@ async function login(req, res) {
         const token = uuid();
 
         await connection.query(`DELETE FROM sessions WHERE "userId" = $1;`, [user.id])
-        console.log(token)
+        
         await connection.query(`
             INSERT INTO sessions
                 (token, "userId")
