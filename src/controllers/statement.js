@@ -2,17 +2,26 @@ import connection from "../database/database.js";
 import bcrypt from 'bcrypt';
 import { v4 as uuid} from 'uuid'
 import dayjs from "dayjs";
+import { statementSchema } from "../validation/statement.js";
 
 async function postStatement(req, res) {
     const { type } = req.query;
     
     const token = req.headers.authorization?.replace('Bearer ', '');
-
+    console.log(type)
     const {
         value,
-        description,
-        date
+        description
     } = req.body;
+
+    const validate = statementSchema.validate({
+        value,
+        description
+    })
+
+    if (validate.error) {
+        return res.status(400).send(validate.error.message);
+    }
 
     let valueData = value
 
@@ -29,7 +38,7 @@ async function postStatement(req, res) {
     }
 
     const dateToday = dayjs().locale('pt-Br').format('DD/MM/YYYY HH:mm:ss');
-    
+    console.log(dateToday)
     try {
         const search = await connection.query(`
             SELECT 
@@ -43,15 +52,17 @@ async function postStatement(req, res) {
         if (!search.rows.length) {
             return res.sendStatus(401);
         }
-
+        
         const user = search.rows;
+        console.log(user)
 
         await connection.query(`
             INSERT INTO statement
                 ("userId", value, description, date)
             VALUES
                 ($1, $2, $3, $4);
-        `, [user[0].id, valueData, description, dateToday]);
+        `, [user[0].userId, valueData, description, dateToday]);
+        console.log(search.rows)
 
         res.status(200).send('Informação adicionada à carteira');
 
@@ -60,4 +71,42 @@ async function postStatement(req, res) {
     }
 }
 
-export { postStatement };
+async function getStatement(req, res) {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+        return res.sendStatus(401)
+    }
+    
+    try {
+        console.log(token)
+        const wallet = await connection.query(`
+            SELECT 
+                statement.value, statement.description, statement.date
+            FROM 
+                statement 
+            JOIN sessions 
+                ON sessions."userId" = statement."userId"
+                    AND sessions.token = $1;
+        `, [token]);
+        // console.log(wallet.rows)
+        const total = await connection.query(`
+            SELECT SUM(value) AS total 
+            FROM statement 
+            JOIN sessions 
+                ON sessions."userId" = statement."userId" 
+            WHERE token = $1;
+        `, [token]);
+
+        const walletData = wallet.rows;
+        const totalData = total.rows[0].total;
+        console.log({walletData, totalData})
+
+        res.status(200).send({walletData, totalData})
+
+    } catch (error) {
+        return res.status(500).send({message: "O banco de dados está offline"});
+    }
+}
+
+export { postStatement, getStatement };
