@@ -1,0 +1,79 @@
+// import supertest from 'supertest';
+// import app from '../src/app.js';
+// import connection from '../src/database/database.js';
+
+// describe('GET /', () => {
+//     const validBody = {
+//         value: 27,
+//         description: 'teste',
+//     };
+
+//     const invalidBody = {
+//         value: 27,
+//     };
+
+//     const validToken = 'Bearer 898aee10-fbc0-4624-9d7b-ef985f836e70';
+
+//     // afterEach(async () => {
+//     //     await connection.query(`
+//     //         INSERT INTO
+//     //     `)
+//     // })
+
+//     // afterAll(async () => {
+
+//     // })
+
+//     test('return 401 for invalid token', async () => {
+//         const result = await supertest(app)
+//             .get('/')
+//             .send(validBody);
+//         expect(result.status).toEqual(401);
+//     });
+
+//     test('return 400 for invalid body', async () => {
+//         const result = await supertest(app)
+//             .set('Authorization', validToken)
+//             .get('/')
+//             .send(invalidBody);
+//         expect(result.status).toEqual(400);
+//     });
+// });
+
+// describe('GET /', () => {
+//     const validBody = {
+//         value: 27,
+//         description: 'teste',
+//     };
+
+//     const invalidBody = {
+//         value: 27,
+//     };
+
+//     const validToken = 'Bearer 898aee10-fbc0-4624-9d7b-ef985f836e70';
+
+//     afterEach(async () => {
+//         await connection.query(`
+//             INSERT INTO 
+//         `);
+//     });
+
+//     // afterAll(async () => {
+
+//     // });
+
+//     test('return 401 for invalid token', async () => {
+//         const result = await supertest(app)
+//             .get('/')
+//             .send(validBody);
+//         expect(result.status).toEqual(401);
+//     });
+
+//     test('return 400 for invalid body', async () => {
+//         const result = await supertest(app)
+//             .set('Authorization', validToken)
+//             .get('/')
+//             .send(invalidBody);
+//         expect(result.status).toEqual(400);
+//     });
+// });

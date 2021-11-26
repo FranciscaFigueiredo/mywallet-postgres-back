@@ -1,27 +1,32 @@
 import express from 'express';
 import cors from 'cors';
-import { getUser, login, logout, signUp } from './controllers/users.js';
-import { getStatement, postStatement } from './controllers/statement.js';
+import {
+    getUser, login, logout, signUp,
+} from './controllers/userController.js';
 
-const server = express();
+import { getStatement, createStatement } from './controllers/statement.js';
 
-server.use(cors());
-server.use(express.json());
+const app = express();
+
+app.use(cors());
+app.use(express.json());
 
 // ------SIGN-UP------
-server.post('/sign-up', signUp);
+app.post('/sign-up', signUp);
 
 // ------LOGIN------
-server.post('/login', login);
+app.post('/login', login);
 
 // ------GET USER------
-server.get('/user', getUser)
+app.get('/user', getUser);
 
 // ------LOGOUT------
-server.post('/logout', logout);
+app.post('/logout', logout);
 
 // ------WALLET------
-server.post('/new-transition', postStatement);
-server.get('/', getStatement);
+app.post('/new-transition', createStatement);
+app.get('/', getStatement);
 
-export default server;
+export {
+    app,
+};
