@@ -1,8 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import {
-    getUser, login, logout, signUp,
-} from './controllers/userController.js';
+import * as userController from './controllers/userController.js';
 
 import { getStatement, createStatement } from './controllers/statement.js';
 
@@ -12,16 +10,16 @@ app.use(cors());
 app.use(express.json());
 
 // ------SIGN-UP------
-app.post('/sign-up', signUp);
+app.post('/sign-up', userController.signUp);
 
 // ------LOGIN------
-app.post('/login', login);
+app.post('/login', userController.login);
 
 // ------GET USER------
-app.get('/user', getUser);
+app.get('/user', userController.getUser);
 
 // ------LOGOUT------
-app.post('/logout', logout);
+app.post('/logout', userController.logout);
 
 // ------WALLET------
 app.post('/new-transition', createStatement);

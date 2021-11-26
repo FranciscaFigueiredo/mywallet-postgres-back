@@ -1,6 +1,3 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
 import { connection } from '../database/database.js';
 import * as userService from '../services/userService.js';
 import { loginSchema } from '../validation/login.js';
@@ -48,40 +45,13 @@ async function login(req, res) {
     }
 
     try {
-        const result = await connection.query('SELECT * FROM users WHERE email = $1;', [email]);
+        const userLogin = await userService.authenticateLogin({ email, password });
 
-        const user = result.rows[0];
-
-        const hashPassword = bcrypt.compareSync(password, user.password);
-
-        if (!user) {
+        if (userLogin.user === null) {
             return res.status(401).send('Usuário não cadastrado');
         }
 
-        if (!hashPassword) {
-            return res.status(401).send('Email ou senha inválidos');
-        }
-
-        const idUser = user.id;
-        const key = process.env.JWT_SECRET;
-        const config = { expiresIn: 60 * 60 * 24 * 2 }; // 2 dias em segundos
-
-        const token = jwt.sign({ idUser }, key, config);
-
-        await connection.query('DELETE FROM sessions WHERE "userId" = $1;', [
-            user.id,
-        ]);
-
-        await connection.query(
-            `
-            INSERT INTO sessions
-                (token, "userId")
-            VALUES ($1, $2);
-        `,
-            [token, user.id],
-        );
-
-        return res.status(200).send(token);
+        return res.status(200).send(userLogin.user.token);
     } catch (error) {
         return res
             .status(500)

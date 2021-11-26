@@ -30,11 +30,8 @@ describe('POST /login', () => {
     } = userCreated;
 
     test('returns 200 for valid body', async () => {
-        const user = await connection.query('SELECT * FROM users;');
-        console.log(user.rows[0], {
-            email,
-            password,
-        });
+        await connection.query('SELECT * FROM users;');
+
         const result = await supertest(app).post('/login').send({
             email,
             password,

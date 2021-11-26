@@ -21,7 +21,39 @@ async function create({ name, email, password }) {
     }
 }
 
+async function drop({ userId }) {
+    try {
+        await connection.query('DELETE FROM sessions WHERE "userId" = $1;', [
+            userId,
+        ]);
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function createSession({ token, userId }) {
+    try {
+        const user = await connection.query(
+            `
+            INSERT INTO sessions
+                (token, "userId")
+            VALUES ($1, $2)
+            RETURNING *;
+        `,
+            [token, userId],
+        );
+
+        return user.rows[0];
+    } catch (error) {
+        return false;
+    }
+}
+
 export {
     findEmail,
     create,
+    drop,
+    createSession,
 };
