@@ -3,7 +3,6 @@ import * as userService from '../services/userService.js';
 import { loginSchema } from '../validation/login.js';
 import { userSchema } from '../validation/users.js';
 
-// eslint-disable-next-line consistent-return
 async function signUp(req, res) {
     const { name, email, password } = req.body;
 
@@ -24,9 +23,7 @@ async function signUp(req, res) {
             return res.status(409).send('Email já cadastrado na plataforma');
         }
 
-        // if (registration) {
         return res.status(201).send('Usuário cadastrado com sucesso');
-        // }
     } catch (error) {
         return res.status(500).send({ message: 'O banco de dados está offline' });
     }
@@ -51,31 +48,21 @@ async function login(req, res) {
             return res.status(401).send('Usuário não cadastrado');
         }
 
-        return res.status(200).send(userLogin.user.token);
+        return res.send(userLogin.user.token);
     } catch (error) {
-        return res
-            .status(500)
-            .send({ message: 'O banco de dados está offline' });
+        return res.status(500).send({ message: 'O banco de dados está offline' });
     }
 }
 
 async function getUser(req, res) {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-
-    if (!token) {
-        return res.sendStatus(401);
-    }
+    const userId = res.locals.user;
 
     try {
-        const user = await connection.query(
-            'SELECT name FROM sessions JOIN users ON users.id = "userId" WHERE token = $1;',
-            [token],
-        );
-        return res.send(user.rows[0]);
+        const userInfo = await userService.getUserInfo({ userId });
+
+        return res.status(200).send(userInfo);
     } catch (error) {
-        return res
-            .status(500)
-            .send({ message: 'O banco de dados está offline' });
+        return res.status(500);
     }
 }
 

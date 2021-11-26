@@ -17,7 +17,6 @@ function auth(req, res, next) {
         res.sendStatus(401);
     }
     res.locals.user = userId;
-
     return next();
 }
 

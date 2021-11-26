@@ -15,7 +15,7 @@ async function create({ name, email, password }) {
             [name, email, password],
         );
 
-        return userCreated;
+        return userCreated.rows[0];
     } catch (error) {
         return false;
     }
@@ -51,9 +51,37 @@ async function createSession({ token, userId }) {
     }
 }
 
+async function findByToken({ userId }) {
+    try {
+        const user = await connection.query(
+            'SELECT * FROM sessions JOIN users ON users.id = sessions."userId" WHERE userId = $1;',
+            [userId],
+        );
+
+        return user.rows[0];
+    } catch (error) {
+        return false;
+    }
+}
+
+async function getUser({ userId }) {
+    try {
+        const user = await connection.query(
+            'SELECT name FROM users WHERE userId = $1;',
+            [userId],
+        );
+
+        return user.rows[0];
+    } catch (error) {
+        return false;
+    }
+}
+
 export {
     findEmail,
     create,
     drop,
     createSession,
+    getUser,
+    findByToken,
 };

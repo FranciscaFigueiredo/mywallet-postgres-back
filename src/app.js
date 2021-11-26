@@ -3,6 +3,7 @@ import cors from 'cors';
 import * as userController from './controllers/userController.js';
 
 import { getStatement, createStatement } from './controllers/statement.js';
+import { auth } from './middlewares/auth.js';
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.post('/sign-up', userController.signUp);
 app.post('/login', userController.login);
 
 // ------GET USER------
-app.get('/user', userController.getUser);
+app.get('/user', auth, userController.getUser);
 
 // ------LOGOUT------
 app.post('/logout', userController.logout);

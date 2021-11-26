@@ -57,7 +57,14 @@ async function authenticateLogin({ email, password }) {
     };
 }
 
+async function getUserInfo({ userId }) {
+    const user = await userRepository.getUser({ userId });
+    return user;
+}
+
 export {
     authenticateRegistration,
     authenticateLogin,
+    getUserInfo,
+    generateToken,
 };
