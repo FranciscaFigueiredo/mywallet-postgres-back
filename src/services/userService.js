@@ -62,9 +62,15 @@ async function getUserInfo({ userId }) {
     return user;
 }
 
+async function deleteFromSession({ userId }) {
+    const userDeleted = await userRepository.dropSession({ userId });
+    return userDeleted;
+}
+
 export {
     authenticateRegistration,
     authenticateLogin,
     getUserInfo,
     generateToken,
+    deleteFromSession,
 };

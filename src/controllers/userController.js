@@ -1,4 +1,3 @@
-import { connection } from '../database/database.js';
 import * as userService from '../services/userService.js';
 import { loginSchema } from '../validation/login.js';
 import { userSchema } from '../validation/users.js';
@@ -67,22 +66,12 @@ async function getUser(req, res) {
 }
 
 async function logout(req, res) {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-
-    if (!token) {
-        return res.sendStatus(401);
-    }
-
+    const userId = res.locals.user;
     try {
-        const deleted = await connection.query(
-            'DELETE FROM sessions WHERE token = $1;',
-            [token],
-        );
-        return res.send(deleted.rows);
+        await userService.deleteFromSession({ userId });
+        return res.sendStatus(200);
     } catch (error) {
-        return res
-            .status(500)
-            .send({ message: 'O banco de dados está offline' });
+        return res.status(500);
     }
 }
 
