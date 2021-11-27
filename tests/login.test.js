@@ -20,6 +20,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await connection.query('DELETE FROM users;');
+    connection.end();
 });
 
 describe('POST /login', () => {

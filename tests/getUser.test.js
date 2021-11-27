@@ -9,6 +9,7 @@ import { connection } from '../src/database/database.js';
 
 afterAll(async () => {
     await connection.query('DELETE FROM sessions;');
+    connection.end();
 });
 
 function createBody() {

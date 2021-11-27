@@ -7,6 +7,7 @@ import * as userRepository from '../src/repositories/userRepository.js';
 
 afterAll(async () => {
     await connection.query('DELETE FROM users;');
+    connection.end();
 });
 
 describe('POST /sign-up', () => {
