@@ -1,9 +1,9 @@
 import '../src/setup.js';
 import faker from 'faker';
 import supertest from 'supertest';
-import { connection } from '../src/database/database.js';
 import { app } from '../src/app.js';
 import * as userService from '../src/services/userService.js';
+import { connection } from '../src/database/database.js';
 
 function createBody() {
     return {
@@ -20,7 +20,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
     await connection.query('DELETE FROM users;');
-    connection.end();
 });
 
 describe('POST /login', () => {

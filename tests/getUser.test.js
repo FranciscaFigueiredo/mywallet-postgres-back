@@ -5,6 +5,11 @@ import { app } from '../src/app.js';
 
 import * as userRepository from '../src/repositories/userRepository.js';
 import * as userService from '../src/services/userService.js';
+import { connection } from '../src/database/database.js';
+
+afterAll(async () => {
+    await connection.query('DELETE FROM sessions;');
+});
 
 function createBody() {
     return {

@@ -1,13 +1,14 @@
-import dayjs from 'dayjs';
 import { connection } from '../database/database.js';
 import { statementSchema } from '../validation/statement.js';
+import * as financeService from '../services/financeService.js';
 
 async function createStatement(req, res) {
-    const { type } = req.query;
-
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const userId = res.locals.user;
 
     const { value, description } = req.body;
+    const {
+        type,
+    } = req.query;
 
     const validate = statementSchema.validate({
         value,
@@ -18,57 +19,17 @@ async function createStatement(req, res) {
         return res.status(400).send(validate.error.message);
     }
 
-    let valueData = value;
-
-    if (type === 'exit' && value > 0) {
-        valueData *= -1;
-    }
-
-    if (type === 'entry' && value < 0) {
-        valueData *= -1;
-    }
-
-    if (!token) {
-        return res.sendStatus(401);
-    }
-
-    const dateToday = dayjs().locale('pt-Br').format('DD/MM/YYYY HH:mm:ss');
-
     try {
-        const search = await connection.query(
-            `
-            SELECT 
-                users.*,
-                sessions.*
-            FROM users
-            JOIN sessions
-                ON users.id = sessions."userId"
-            WHERE sessions.token = $1;
-        `,
-            [token],
-        );
+        await financeService.verifyType({
+            userId,
+            value,
+            description,
+            type,
+        });
 
-        if (!search.rows.length) {
-            return res.sendStatus(401);
-        }
-
-        const user = search.rows;
-
-        await connection.query(
-            `
-            INSERT INTO statement
-                ("userId", value, description, date)
-            VALUES
-                ($1, $2, $3, $4);
-        `,
-            [user[0].userId, valueData, description, dateToday],
-        );
-
-        return res.status(200).send('Informação adicionada à carteira');
+        return res.sendStatus(200);
     } catch (error) {
-        return res
-            .status(500)
-            .send({ message: 'O banco de dados está offline' });
+        return res.status(500);
     }
 }
 
