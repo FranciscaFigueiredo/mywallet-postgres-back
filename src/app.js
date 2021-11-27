@@ -20,7 +20,7 @@ app.post('/login', userController.login);
 app.get('/user', auth, userController.getUser);
 
 // ------LOGOUT------
-app.post('/logout', userController.logout);
+app.post('/logout', auth, userController.logout);
 
 // ------WALLET------
 app.post('/new-transition', createStatement);

@@ -51,6 +51,19 @@ async function createSession({ token, userId }) {
     }
 }
 
+async function dropSession({ userId }) {
+    try {
+        await connection.query(
+            'DELETE FROM sessions WHERE token = $1;',
+            [userId],
+        );
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 async function findByToken({ userId }) {
     try {
         const user = await connection.query(
@@ -82,6 +95,7 @@ export {
     create,
     drop,
     createSession,
+    dropSession,
     getUser,
     findByToken,
 };
