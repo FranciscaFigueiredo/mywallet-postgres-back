@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as userController from './controllers/userController.js';
 
-import { getStatement, createStatement } from './controllers/statement.js';
+import * as financeController from './controllers/financeController.js';
 import { auth } from './middlewares/auth.js';
 
 const app = express();
@@ -23,8 +23,8 @@ app.get('/user', auth, userController.getUser);
 app.post('/logout', auth, userController.logout);
 
 // ------WALLET------
-app.post('/new-transition', createStatement);
-app.get('/', getStatement);
+app.post('/new-transition', auth, financeController.createStatement);
+app.get('/', auth, financeController.getStatement);
 
 export {
     app,
