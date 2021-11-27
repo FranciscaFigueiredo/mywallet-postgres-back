@@ -24,7 +24,7 @@ app.post('/logout', auth, userController.logout);
 
 // ------WALLET------
 app.post('/new-transition', auth, financeController.createStatement);
-app.get('/', financeController.getStatement);
+app.get('/', auth, financeController.getStatement);
 
 export {
     app,

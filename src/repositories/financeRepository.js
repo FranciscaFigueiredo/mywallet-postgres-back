@@ -23,6 +23,40 @@ async function create({
     }
 }
 
+async function getEventsByUserId({ userId }) {
+    try {
+        const wallet = await connection.query(
+            `
+            SELECT 
+                value, description, date 
+            FROM statement 
+            WHERE "userId" = $1;`,
+            [userId],
+        );
+        return wallet.rows;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function getTotalFinancialEvents({ userId }) {
+    try {
+        const total = await connection.query(
+            `
+            SELECT SUM(value) AS total 
+            FROM statement
+            WHERE "userId" = $1;
+        `,
+            [userId],
+        );
+        return total.rows;
+    } catch (error) {
+        return false;
+    }
+}
+
 export {
     create,
+    getEventsByUserId,
+    getTotalFinancialEvents,
 };

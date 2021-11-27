@@ -29,6 +29,19 @@ async function verifyType({
     return createdfinance;
 }
 
+async function getStatement({ userId }) {
+    try {
+        const wallet = await financeRepository.getEventsByUserId({ userId });
+
+        const total = await financeRepository.getTotalFinancialEvents({ userId });
+
+        return { wallet, total };
+    } catch (error) {
+        return false;
+    }
+}
+
 export {
     verifyType,
+    getStatement,
 };

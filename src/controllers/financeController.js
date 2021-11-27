@@ -1,4 +1,3 @@
-import { connection } from '../database/database.js';
 import { statementSchema } from '../validation/statement.js';
 import * as financeService from '../services/financeService.js';
 
@@ -34,42 +33,19 @@ async function createStatement(req, res) {
 }
 
 async function getStatement(req, res) {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-
-    if (!token) {
-        return res.sendStatus(401);
-    }
+    const userId = res.locals.user?.userId;
 
     try {
-        const wallet = await connection.query(
-            `
-            SELECT 
-                statement.value, statement.description, statement.date
-            FROM 
-                statement 
-            JOIN sessions 
-                ON sessions."userId" = statement."userId"
-                    AND sessions.token = $1;
-        `,
-            [token],
-        );
-        const total = await connection.query(
-            `
-            SELECT SUM(value) AS total 
-            FROM statement 
-            JOIN sessions 
-                ON sessions."userId" = statement."userId" 
-            WHERE token = $1;
-        `,
-            [token],
-        );
+        const financeEventsData = await financeService.getStatement({ userId });
 
-        const walletData = wallet.rows;
-        const totalData = total.rows[0].total;
+        const {
+            wallet,
+            total,
+        } = financeEventsData;
 
-        return res.status(200).send({ walletData, totalData });
+        return res.send({ wallet, total });
     } catch (error) {
-        return res.status(500).send({ message: 'O banco de dados está offline' });
+        return res.status(500);
     }
 }
 
