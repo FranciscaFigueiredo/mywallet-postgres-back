@@ -54,19 +54,22 @@ async function login(req, res) {
 }
 
 async function getUser(req, res) {
-    const userId = res.locals.user;
+    const userId = res.locals.user?.idUser;
 
     try {
         const userInfo = await userService.getUserInfo({ userId });
 
-        return res.status(200).send(userInfo);
+        if (userInfo) {
+            return res.status(200).send(userInfo);
+        }
+        return res.status(404);
     } catch (error) {
         return res.status(500);
     }
 }
 
 async function logout(req, res) {
-    const userId = res.locals.user;
+    const userId = res.locals.user?.idUser;
     try {
         await userService.deleteFromSession({ userId });
         return res.sendStatus(200);
