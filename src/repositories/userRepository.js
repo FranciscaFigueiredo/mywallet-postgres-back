@@ -64,7 +64,7 @@ async function dropSession({ userId }) {
     }
 }
 
-async function findByToken({ userId }) {
+async function findById({ userId }) {
     try {
         const user = await connection.query(
             'SELECT * FROM sessions JOIN users ON users.id = sessions."userId" WHERE userId = $1;',
@@ -80,10 +80,9 @@ async function findByToken({ userId }) {
 async function getUser({ userId }) {
     try {
         const user = await connection.query(
-            'SELECT name FROM users WHERE userId = $1;',
+            'SELECT name FROM users WHERE id = $1;',
             [userId],
         );
-
         return user.rows[0];
     } catch (error) {
         return false;
@@ -97,5 +96,5 @@ export {
     createSession,
     dropSession,
     getUser,
-    findByToken,
+    findById,
 };

@@ -2,15 +2,18 @@ import { statementSchema } from '../validation/statement.js';
 import * as financeService from '../services/financeService.js';
 
 async function createStatement(req, res) {
-    const userId = res.locals.user;
+    const userId = res.locals.user?.idUser;
 
     const { value, description } = req.body;
+
+    const valueManipulated = Number(value).toFixed(2) * 100;
+
     const {
         type,
     } = req.query;
 
     const validate = statementSchema.validate({
-        value,
+        value: valueManipulated,
         description,
     });
 
@@ -21,7 +24,7 @@ async function createStatement(req, res) {
     try {
         await financeService.verifyType({
             userId,
-            value,
+            value: valueManipulated,
             description,
             type,
         });
@@ -33,7 +36,7 @@ async function createStatement(req, res) {
 }
 
 async function getStatement(req, res) {
-    const userId = res.locals.user?.userId;
+    const userId = res.locals.user?.idUser;
 
     try {
         const financeEventsData = await financeService.getStatement({ userId });

@@ -49,7 +49,8 @@ async function getTotalFinancialEvents({ userId }) {
         `,
             [userId],
         );
-        return total.rows;
+
+        return total.rows[0].total;
     } catch (error) {
         return false;
     }

@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import dayjs from 'dayjs';
 import * as financeRepository from '../repositories/financeRepository.js';
 
@@ -34,8 +35,16 @@ async function getStatement({ userId }) {
         const wallet = await financeRepository.getEventsByUserId({ userId });
 
         const total = await financeRepository.getTotalFinancialEvents({ userId });
+        let manipulateTotal;
 
-        return { wallet, total };
+        if (wallet.length && total) {
+            // eslint-disable-next-line no-param-reassign
+            wallet.map((statement) => statement.value /= 100);
+            manipulateTotal = total / 100;
+            return { wallet, total: manipulateTotal };
+        }
+
+        return false;
     } catch (error) {
         return false;
     }
