@@ -5,7 +5,7 @@
     "start": "NODE_ENV=production node ./src/server.js",
     "start:prod": "NODE_ENV='production' npx nodemon ./src/server.js",
     "start:dev": "NODE_ENV='dev' npx nodemon ./src/server.js",
-    "start:test": "NODE_ENV='test' npx jest -i --watch",
+    "start:test": "NODE_ENV='test' npx jest -i --watchAll",
     "test": "NODE_ENV='test' npx jest -i"
   },
   "dependencies": {
