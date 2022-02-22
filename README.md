@@ -1,9 +1,16 @@
-# My Wallet
+# MyWallet
 
+<p align="center" >
+<img src='https://raw.githubusercontent.com/FranciscaFigueiredo/mywallet-front/feat/mongoIntegration/public/logo.jpeg' />
+</p>
 
-MyWallet is a web app to manage your wallet.
+### MyWallet is a web app to manage your wallet.
 
 You can add debits and credits to your account.
+
+Deploy: https://mywallet-seven.vercel.app/
+
+Frontend: https://github.com/FranciscaFigueiredo/mywallet-front
 
 <br>
 
@@ -14,37 +21,43 @@ You can add debits and credits to your account.
 <br/>
 
 ### - Clone repository
-<blockquote>
+```
   git clone https://github.com/FranciscaFigueiredo/projeto-14-mywallet-back.git
-</blockquote>
+```
 
 <br/>
 
 ### - Install dependencies
 
-<blockquote>
+```
   npm i
-</blockquote>
+```
 or
-<blockquote>
+```
   npm install
-</blockquote>
+```
 
 <br/>
 
 ### - Start
 
-<blockquote>
-  npm start
-</blockquote>
+```
+  npm start:dev
+```
+
+### - Run test
+
+```
+  npm start:test
+```
 
 <br/>
 
 ### - Prepare the backend and database
 
-- Use the mywallet_dump.sql file to create the project database
+- Edit the .env.example file with the data needed to connect to your database and edit the filename to .env.dev for a developer environment.
 
-- Edit the .env.example file with the necessary data to connect to your bank.
+- Use the mywallet_dump.sql file to create the project database
 
 <br/>
 
