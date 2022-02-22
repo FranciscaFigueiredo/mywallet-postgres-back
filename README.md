@@ -42,7 +42,13 @@ or
 ### - Start
 
 ```
-  npm start
+  npm start:dev
+```
+
+### - Run test
+
+```
+  npm start:test
 ```
 
 <br/>
