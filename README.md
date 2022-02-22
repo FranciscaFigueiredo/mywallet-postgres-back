@@ -55,9 +55,9 @@ or
 
 ### - Prepare the backend and database
 
-- Use the mywallet_dump.sql file to create the project database
+- Edit the .env.example file with the data needed to connect to your database and edit the filename to .env.dev for a developer environment.
 
-- Edit the .env.example file with the necessary data to connect to your bank.
+- Use the mywallet_dump.sql file to create the project database
 
 <br/>
 
